@@ -1,2 +1,22 @@
-#root {
+#output {
+    margin-top: 10px;
+}
+
+.row {
+    padding: 8px;
+    border-top: 1px solid #ddd;
+    animation: ease-in 0.6s row-entrance;
+}
+
+.row i {
+    font-size: 12px;
+}
+
+@keyframes row-entrance {
+    0% {
+        background-color: moccasin;
+    }
+    100% {
+        background-color: transparent;
+    }
 }

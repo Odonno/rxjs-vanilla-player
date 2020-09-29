@@ -11,7 +11,14 @@ const displayRow = (value: any) => {
     const date = new Date().toLocaleString();
 
     if (outputElement) {
-        outputElement.innerHTML = `<div>#${currentIndex++}, Value: ${value}, Date: ${date}</div>` + outputElement.innerHTML;
+        const child = `
+<div class="row">
+    <div><i>#${currentIndex++}, ${date}</i></div>
+    <div>${value}</div>
+</div>
+        `;
+
+        outputElement.insertAdjacentHTML("afterbegin", child);
     }
 }
 
@@ -20,7 +27,7 @@ export const playObservable = <T>(observable: Observable<T>) => {
         const playing$ = fromEvent(startStopButton, "click").pipe(
             map((_, index) => index % 2 === 0)
         );
-    
+
         // only one running observable
         playing$.pipe(
             switchMap(playing => {
@@ -32,7 +39,7 @@ export const playObservable = <T>(observable: Observable<T>) => {
         ).subscribe(value => {
             displayRow(value);
         });
-    
+
         // alternate start/stop button
         playing$.subscribe(playing => {
             startStopButton.innerText = playing ? "Stop" : "Start";
