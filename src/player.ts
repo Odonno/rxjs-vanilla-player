@@ -10,11 +10,13 @@ let currentIndex = 0;
 const displayRow = (value: any) => {
     const date = new Date().toLocaleString();
 
+    const output = typeof value === "object" ? JSON.stringify(value, null, 2) : value;
+
     if (outputElement) {
         const child = `
 <div class="row">
     <div><i>#${currentIndex++}, ${date}</i></div>
-    <div>${value}</div>
+    <div>${output}</div>
 </div>
         `;
 
