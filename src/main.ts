@@ -1,6 +1,6 @@
 import './styles.css';
-import { timer } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { timer, fromEvent, EMPTY } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 const rootElement = document.getElementById("root");
 const startStopButton = document.getElementById("startStopButton");
@@ -17,13 +17,28 @@ const displayRow = (value: any) => {
 }
 
 if (rootElement && startStopButton && outputElement) {
-    // TODO : alternate start/stop button
-    // TODO : only one running observable
-    startStopButton.addEventListener("click", () => {
-        timer(0, 1000).pipe(
-            map(i => i ** 2)
-        ).subscribe(index => {
-            displayRow(index);
-        });
+    const playing$ = fromEvent(startStopButton, "click").pipe(
+        map((_, index) => index % 2 === 0)
+    );
+
+    const observable = timer(0, 1000).pipe(
+        map(i => i ** 2)
+    );
+
+    // only one running observable
+    playing$.pipe(
+        switchMap(playing => {
+            if (playing) {
+                return observable;
+            }
+            return EMPTY;
+        })
+    ).subscribe(value => {
+        displayRow(value);
+    });
+
+    // alternate start/stop button
+    playing$.subscribe(playing => {
+        startStopButton.innerText = playing ? "Stop" : "Start";
     });
 }
