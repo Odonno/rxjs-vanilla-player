@@ -1,44 +1,10 @@
 import './styles.css';
-import { timer, fromEvent, EMPTY } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { playObservable } from './player';
+import { timer } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-const rootElement = document.getElementById("root");
-const startStopButton = document.getElementById("startStopButton");
-const outputElement = document.getElementById("output");
+const observable = timer(0, 1000).pipe(
+    map(i => i ** 2)
+);
 
-let currentIndex = 0;
-
-const displayRow = (value: any) => {
-    const date = new Date().toLocaleString();
-
-    if (outputElement) {
-        outputElement.innerHTML = `<div>#${currentIndex++}, Value: ${value}, Date: ${date}</div>` + outputElement.innerHTML;
-    }
-}
-
-if (rootElement && startStopButton && outputElement) {
-    const playing$ = fromEvent(startStopButton, "click").pipe(
-        map((_, index) => index % 2 === 0)
-    );
-
-    const observable = timer(0, 1000).pipe(
-        map(i => i ** 2)
-    );
-
-    // only one running observable
-    playing$.pipe(
-        switchMap(playing => {
-            if (playing) {
-                return observable;
-            }
-            return EMPTY;
-        })
-    ).subscribe(value => {
-        displayRow(value);
-    });
-
-    // alternate start/stop button
-    playing$.subscribe(playing => {
-        startStopButton.innerText = playing ? "Stop" : "Start";
-    });
-}
+playObservable(observable);
