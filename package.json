@@ -1,5 +1,5 @@
 {
-    "name": "typescript-vanilla-template",
+    "name": "rxjs-vanilla-player",
     "version": "0.0.1",
     "scripts": {
         "start": "npm run serve",
