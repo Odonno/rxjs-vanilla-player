@@ -1,5 +1,22 @@
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    max-height: 100%;
+}
+
+#root {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 #output {
+    flex: 1;
     margin-top: 10px;
+    overflow: auto;
 }
 
 .row {
@@ -14,9 +31,71 @@
 
 @keyframes row-entrance {
     0% {
-        background-color: moccasin;
+        background-color: #d81b60;
     }
     100% {
         background-color: transparent;
     }
+}
+
+#player {
+    height: 50px;
+    background-color: #fafafa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button {
+    position: relative;
+    display: block;
+    padding: 0;
+    overflow: hidden;
+    border-width: 0;
+    outline: none;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+    background-color: white;
+    width: 100px;
+    height: 32px;
+    transition: ease-in-out .3s;
+    cursor: pointer;
+}
+button:hover {
+    color: #ecf0f1;
+    background-color: #d81b60;
+}
+button > * {
+    position: relative;
+}
+button span {
+    display: block;
+    padding: 12px 24px;
+}
+button:before {
+    content: "";
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    display: block;
+    width: 0;
+    padding-top: 0;
+        
+    border-radius: 100%;
+
+    background-color: rgba(236, 240, 241, .3);
+
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+button:active:before {
+    width: 120%;
+    padding-top: 120%;
+
+    transition: width .2s ease-out, padding-top .2s ease-out;
 }

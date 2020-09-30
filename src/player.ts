@@ -5,6 +5,8 @@ const rootElement = document.getElementById("root");
 const startStopButton = document.getElementById("startStopButton");
 const outputElement = document.getElementById("output");
 
+document.body.removeAttribute("style");
+
 let currentIndex = 0;
 
 const displayRow = (value: any) => {
