@@ -1,8 +1,9 @@
-import { fromEvent, EMPTY, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { fromEvent, EMPTY, Observable, combineLatest, merge } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs/operators';
 
 const rootElement = document.getElementById("root");
 const startStopButton = document.getElementById("startStopButton");
+const clearButton = document.getElementById("clearButton");
 const outputElement = document.getElementById("output");
 
 document.body.removeAttribute("style");
@@ -26,31 +27,52 @@ const displayRow = (value: any) => {
     }
 }
 
-export const playObservable = <T>(observable: Observable<T>) => {
-    if (rootElement && startStopButton && outputElement) {
-        const playing$ = fromEvent(startStopButton, "click").pipe(
+export const displayObservable = <T>(observable$: Observable<T>) => {
+    if (rootElement && startStopButton && outputElement && clearButton) {
+        const isPlaying$ = fromEvent(startStopButton, "click").pipe(
             map((_, index) => index % 2 === 0)
         );
 
+        const clear$ = fromEvent(clearButton, "click");
+
         // only one running observable
-        playing$.pipe(
+        const displayRow$ = isPlaying$.pipe(
             switchMap(playing => {
                 if (playing) {
-                    return observable;
+                    return observable$;
                 }
                 return EMPTY;
             })
-        ).subscribe(value => {
+        );
+        
+        displayRow$.subscribe(value => {
             displayRow(value);
         });
 
         // alternate start/stop button
-        playing$.subscribe(playing => {
-            startStopButton.innerText = playing ? "Stop" : "Start";
+        isPlaying$.subscribe(isPlaying => {
+            startStopButton.innerText = isPlaying ? "Stop" : "Start";
 
-            if (!playing) {
+            if (!isPlaying) {
                 currentIndex = 0;
-                outputElement.innerHTML = "";
+            }
+        });
+
+        // clear
+        clear$.subscribe(() => {
+            outputElement.innerHTML = "";
+        });
+
+        const canClear$ = merge(displayRow$, clear$).pipe(
+            map(() => !!outputElement.innerHTML),
+            startWith(false)
+        );
+
+        canClear$.subscribe(canClear => {
+            if (canClear) {
+                clearButton.removeAttribute("disabled");
+            } else {
+                clearButton.setAttribute("disabled", "");
             }
         });
     }

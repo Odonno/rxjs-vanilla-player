@@ -63,9 +63,11 @@ button {
     width: 100px;
     height: 32px;
     transition: ease-in-out .3s;
+}
+button:enabled {
     cursor: pointer;
 }
-button:hover {
+button:enabled:hover {
     color: #ecf0f1;
     background-color: #d81b60;
 }
@@ -102,4 +104,11 @@ button:active:before {
     padding-top: 120%;
 
     transition: width .2s ease-out, padding-top .2s ease-out;
+}
+
+#startStopButton {
+    margin-right: 5px;
+}
+#clearButton {
+    margin-left: 5px;
 }
