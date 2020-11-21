@@ -8,4 +8,4 @@ const observable$ = timer(0, 1000).pipe(
     map(i => [i, i** 2])
 );
 
-displayObservable(observable$);
+displayObservable(observable$, true);

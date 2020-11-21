@@ -1,5 +1,5 @@
-import { fromEvent, EMPTY, Observable, combineLatest, merge } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { fromEvent, EMPTY, Observable, merge } from 'rxjs';
+import { map, scan, startWith, switchMap } from 'rxjs/operators';
 
 const rootElement = document.getElementById("root");
 const startStopButton = document.getElementById("startStopButton");
@@ -27,10 +27,11 @@ const displayRow = (value: any) => {
     }
 }
 
-export const displayObservable = <T>(observable$: Observable<T>) => {
+export const displayObservable = <T>(observable$: Observable<T>, autostart = false) => {
     if (rootElement && startStopButton && outputElement && clearButton) {
         const isPlaying$ = fromEvent(startStopButton, "click").pipe(
-            map((_, index) => index % 2 === 0)
+            scan(acc => !acc, autostart),
+            startWith(autostart),
         );
 
         const clear$ = fromEvent(clearButton, "click");
@@ -65,7 +66,7 @@ export const displayObservable = <T>(observable$: Observable<T>) => {
 
         const canClear$ = merge(displayRow$, clear$).pipe(
             map(() => !!outputElement.innerHTML),
-            startWith(false)
+            startWith(!!outputElement.innerHTML)
         );
 
         canClear$.subscribe(canClear => {
